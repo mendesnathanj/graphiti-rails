@@ -25,6 +25,14 @@ module Graphiti
       end
     end
 
+    def resource_prefix
+      @resource_prefix ||= begin
+                             return '' if api_namespace.nil? || api_namespace == ''
+
+                             api_namespace.split('/').slice(1..-1).map(&:capitalize).push('').join('::')
+                           end
+    end
+
     def actions
       @options["actions"] || %w[index show create update destroy]
     end

@@ -1,5 +1,7 @@
 <% module_namespacing do -%>
-class <%= class_name %>Resource < ApplicationResource
+class <%= "#{resource_prefix}#{class_name}" %>Resource < <%= resource_prefix %>ApplicationResource
+  <%= "self.model = #{class_name}" if api_namespace %>
+  primary_endpoint <%= "'/#{type}'," %> %i[<%= actions.join(' ') %>]
   <%- resource_attributes.each do |a| -%>
   <%- if [:id, :created_at, :updated_at].include?(a.name.to_sym) -%>
   attribute :<%= a.name %>, :<%= a.type %>, writable: false

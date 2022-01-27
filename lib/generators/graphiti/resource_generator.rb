@@ -48,7 +48,8 @@ module Graphiti
     class ModelAction
       attr_reader :class_name
       def initialize(class_name)
-        @class_name = class_name
+        *rest, name = class_name.split('::')
+        @class_name = name
       end
 
       def invoke!
@@ -123,27 +124,38 @@ module Graphiti
     end
 
     def generate_controller
-      to = File.join("app/controllers", class_path, "#{file_name.pluralize}_controller.rb")
+      to = File.join("app/controllers#{api_namespace}", class_path, "#{file_name.pluralize}_controller.rb")
       template("controller.rb.erb", to)
     end
 
     def generate_application_resource
-      to = File.join("app/resources", class_path, "application_resource.rb")
+      to = File.join("app/resources#{api_namespace}", class_path, "application_resource.rb")
       template("application_resource.rb.erb", to)
       require "#{::Rails.root}/#{to}"
     end
 
     def application_resource_defined?
-      "ApplicationResource".safe_constantize.present?
+      "#{resource_prefix}ApplicationResource".safe_constantize.present?
     end
 
     def generate_route
       code = "resources :#{file_name.pluralize}"
+      code << ", controller: '#{(api_namespace.slice(1..-1) || '').concat("/#{type}")}'"
       code << %(, only: [#{actions.map { |a| ":#{a}" }.join(", ")}]) if actions.length < 5
       code << "\n"
-      inject_into_file "config/routes.rb", after: /ApplicationResource.*$\n/ do
-        indent(code, 4)
+      regex = /#{resource_prefix}ApplicationResource.*$\n/
+      # inject_into_file "config/routes.rb", after: regex do
+      #   indent(code, 4)
+      # end
+      file = File.new('config/routes.rb')
+      tempfile = File.open('routes.tmp', 'w')
+      file.each do |line|
+        tempfile << line
+        tempfile << indent(code, 4) if line =~ regex
       end
+      file.close
+      tempfile.close
+      FileUtils.mv('routes.tmp', 'config/routes.rb')
     end
 
     def generate_resource_specs
@@ -161,7 +173,7 @@ module Graphiti
     end
 
     def generate_resource
-      to = File.join("app/resources", class_path, "#{file_name}_resource.rb")
+      to = File.join("app/resources#{api_namespace}", class_path, "#{file_name}_resource.rb")
       template("resource.rb.erb", to)
       require "#{::Rails.root}/#{to}" if create?
     end
@@ -175,7 +187,7 @@ module Graphiti
     end
 
     def resource_klass
-      "#{model_klass}Resource"
+      "#{resource_prefix}#{model_klass}Resource"
     end
 
     def type

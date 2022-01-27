@@ -3,7 +3,7 @@
 # holds configuration/methods for subclasses.
 # All Resources should inherit from ApplicationResource.
 <%- end -%>
-class ApplicationResource < Graphiti::Resource
+class <%= resource_prefix %>ApplicationResource < Graphiti::Resource
   <%- unless omit_comments? -%>
   # Use the ActiveRecord Adapter for all subclasses.
   # Subclasses can still override this default.

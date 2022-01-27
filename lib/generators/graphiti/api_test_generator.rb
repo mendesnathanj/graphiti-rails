@@ -27,7 +27,7 @@ module Graphiti
     private
 
     def var
-      dir.singularize
+      dir.split('/').last.singularize
     end
 
     def dir
@@ -36,27 +36,27 @@ module Graphiti
 
     def generate_api_specs
       if actions?("index")
-        to = File.join("spec", ApplicationResource.endpoint_namespace, dir, "index_spec.rb")
+        to = File.join("spec", dir, "index_spec.rb")
         template("index_request_spec.rb.erb", to)
       end
 
       if actions?("show")
-        to = File.join("spec", ApplicationResource.endpoint_namespace, dir, "show_spec.rb")
+        to = File.join("spec", dir, "show_spec.rb")
         template("show_request_spec.rb.erb", to)
       end
 
       if actions?("create")
-        to = File.join("spec", ApplicationResource.endpoint_namespace, dir, "create_spec.rb")
+        to = File.join("spec", dir, "create_spec.rb")
         template("create_request_spec.rb.erb", to)
       end
 
       if actions?("update")
-        to = File.join("spec", ApplicationResource.endpoint_namespace, dir, "update_spec.rb")
+        to = File.join("spec", dir, "update_spec.rb")
         template("update_request_spec.rb.erb", to)
       end
 
       if actions?("destroy")
-        to = File.join("spec", ApplicationResource.endpoint_namespace, dir, "destroy_spec.rb")
+        to = File.join("spec", dir, "destroy_spec.rb")
         template("destroy_request_spec.rb.erb", to)
       end
     end
