@@ -31,7 +31,8 @@ module Graphiti
     end
 
     def dir
-      @resource.gsub("Resource", "").underscore.pluralize
+      api_namespace.slice(1..-1)
+      # @resource.gsub("Resource", "").underscore.pluralize
     end
 
     def generate_api_specs

@@ -29,8 +29,12 @@ module Graphiti
       @resource_prefix ||= begin
                              return '' if api_namespace.nil? || api_namespace == ''
 
-                             api_namespace.split('/').slice(1..-1).map(&:capitalize).push('').join('::')
+                             "#{api_namespace.split('/').last.capitalize}::"
                            end
+    end
+
+    def resource_folder
+      @resource_folder ||= "/#{api_namespace.split('/').last}"
     end
 
     def actions

@@ -31,12 +31,12 @@ module Graphiti
 
     def generate_resource_specs
       if actions?("create", "update", "destroy")
-        to = "spec/resources#{api_namespace}/#{var}/writes_spec.rb"
+        to = "spec/resources#{resource_folder}/#{var}/writes_spec.rb"
         template("resource_writes_spec.rb.erb", to)
       end
 
       if actions?("index", "show")
-        to = "spec/resources#{api_namespace}/#{var}/reads_spec.rb"
+        to = "spec/resources#{resource_folder}/#{var}/reads_spec.rb"
         template("resource_reads_spec.rb.erb", to)
       end
     end
