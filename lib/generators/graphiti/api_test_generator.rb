@@ -35,7 +35,7 @@ module Graphiti
     end
 
     def nested_dir
-      @resource.gsub("Resource", "").underscore.pluralize
+      @resource.gsub(/\w+::/, '').gsub("Resource", "").underscore.pluralize
     end
 
     def generate_api_specs
