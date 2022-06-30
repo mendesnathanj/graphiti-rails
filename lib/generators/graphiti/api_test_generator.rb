@@ -34,29 +34,33 @@ module Graphiti
       api_namespace.slice(1..-1)
     end
 
+    def nested_dir
+      @resource.gsub("Resource", "").underscore.pluralize
+    end
+
     def generate_api_specs
       if actions?("index")
-        to = File.join("spec", dir, "index_spec.rb")
+        to = File.join("spec", dir, nested_dir, "index_spec.rb")
         template("index_request_spec.rb.erb", to)
       end
 
       if actions?("show")
-        to = File.join("spec", dir, "show_spec.rb")
+        to = File.join("spec", dir, nested_dir, "show_spec.rb")
         template("show_request_spec.rb.erb", to)
       end
 
       if actions?("create")
-        to = File.join("spec", dir, "create_spec.rb")
+        to = File.join("spec", dir, nested_dir, "create_spec.rb")
         template("create_request_spec.rb.erb", to)
       end
 
       if actions?("update")
-        to = File.join("spec", dir, "update_spec.rb")
+        to = File.join("spec", dir, nested_dir, "update_spec.rb")
         template("update_request_spec.rb.erb", to)
       end
 
       if actions?("destroy")
-        to = File.join("spec", dir, "destroy_spec.rb")
+        to = File.join("spec", dir, nested_dir, "destroy_spec.rb")
         template("destroy_request_spec.rb.erb", to)
       end
     end
